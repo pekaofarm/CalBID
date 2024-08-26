@@ -1,0 +1,100 @@
+<html lang="th"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>โปรแกรมคำนวณบอลสเต็ป</title>
+  <script>
+      function calculateStepBet() {
+          let oddsElements = document.getElementsByClassName('odds');
+          let resultsElements = document.getElementsByClassName('results');
+          let stake = Number(document.getElementById("stake").value);
+
+          let totalOdds = 1;
+          let calculationSteps = [];
+          for (let i = 0; i < oddsElements.length; i++) {
+              let odds = Number(oddsElements[i].value);
+              let result = resultsElements[i].value;
+              let adjustedOdds = odds;
+
+              switch(result) {
+                  case 'win':
+                      // ไม่เปลี่ยนแปลงอัตราต่อรอง
+                      break;
+                  case 'draw':
+                      adjustedOdds = 1;
+                      break;
+                  case 'half-win':
+                      adjustedOdds = ((odds - 1) / 2) + 1;
+                      break;
+                  case 'half-lose':
+                      adjustedOdds = 0.5;
+                      break;
+                  case 'lose':
+                      adjustedOdds = 0;
+                      break;
+              }
+
+              calculationSteps.push(`คู่ที่ ${i + 1}: ${odds} (${result}) -> ${adjustedOdds}`);
+              totalOdds *= adjustedOdds;
+          }
+
+          let profit = stake * totalOdds;
+          
+
+          document.getElementById("result").innerText = `กำไรรวมต้นทุน=${profit.toFixed(2)} บาท\n\n`
+
+                                                     
+      }
+
+      function addMatch() {
+          let matchContainer = document.createElement('div');
+          matchContainer.className = 'match-container';
+
+          let oddsInput = document.createElement('input');
+          oddsInput.type = 'number';
+          oddsInput.placeholder = 'กรอกอัตราต่อรอง';
+          oddsInput.className = 'odds';
+
+          let resultsSelect = document.createElement('select');
+          resultsSelect.className = 'results';
+          resultsSelect.innerHTML = `
+              <option value="win">ชนะ</option>
+              <option value="draw">เสมอ</option>
+              <option value="half-win">ได้ครึ่ง</option>
+              <option value="half-lose">เสียครึ่ง</option>
+              <option value="lose">แพ้</option>
+          `;
+
+          matchContainer.appendChild(oddsInput);
+          matchContainer.appendChild(resultsSelect);
+          document.getElementById('matches').appendChild(matchContainer);
+      }
+
+      document.addEventListener('DOMContentLoaded', (event) => {
+      });
+  </script>
+</head>
+<body>
+  <h1>โปรแกรมคำนวณบอลสเต็ป</h1>
+  <div id="result">กำไรรวมต้นทุน = 0.00 บาท
+
+
+<br>
+<br></div>
+  <div id="steps"></div>
+  <div id="matches"><div class="match-container"><input type="number" placeholder="กรอกอัตราต่อรอง" class="odds"><select class="results">
+              <option value="win">ชนะ</option>
+              <option value="draw">เสมอ</option>
+              <option value="half-win">ได้ครึ่ง</option>
+              <option value="half-lose">เสียครึ่ง</option>
+              <option value="lose">แพ้</option>
+          </select></div></div>
+  <div class="action-container">
+      <button onclick="addMatch()">เพิ่มคู่แข่งขัน</button>
+      <input type="number" id="stake" placeholder="กรอกจำนวนเงินเดิมพัน">
+  </div>
+  <div class="calculate-container">
+      <button onclick="calculateStepBet()">คำนวณ</button>
+  </div>
+
+
+</body></html>
